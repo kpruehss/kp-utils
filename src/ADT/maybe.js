@@ -1,5 +1,5 @@
 /**
- * Represents a value that may or may not exist.
+ * Wraps a value that may or may not exist. This is useful for avoiding null checks and for chaining operations that may return null.
  * @class
  */
 export class Maybe {
@@ -27,15 +27,15 @@ export class Maybe {
   }
 
   /**
-   * Creates a new Maybe instance from a nullable value.
+   * Creates a new Maybe instance from a nullable value. If the value is null or undefined, a new Nothing instance is returned. Otherwise, a new Just instance is returned.
    * @static
    * @param {*} value - The value to wrap in a Maybe.
    * @returns {Just|Nothing} A new Just instance with the given value if it is not null or undefined, otherwise a new Nothing instance.
    * @example
-   * const maybe1 = Maybe.fromNullable(null); // returns Nothing
-   * const maybe2 = Maybe.fromNullable(42); // returns Just(42)
+   * const maybe1 = Maybe.of(null); // returns Nothing
+   * const maybe2 = Maybe.of(42); // returns Just(42)
    */
-  static fromNullable(value) {
+  static of(value) {
     return value != null ? Maybe.Just(value) : Maybe.Nothing();
   }
 }
@@ -45,6 +45,14 @@ export class Maybe {
  * @class
  */
 export class Just {
+  /**
+   * Creates a new Maybe instance with the given value. This constructor should not be called directly. Instead, use Maybe's static 'Just' method.
+   * @class
+   * @param {*} value - The value to wrap in a Maybe instance.
+   * @example
+   * const maybeNum = new Maybe.Just(42);
+   * const maybeStr = new Maybe.Just("hello");
+   */
   constructor(value) {
     this._value = value;
   }
@@ -56,42 +64,43 @@ export class Just {
    * const maybe1 = Maybe.Just(42);
    * const maybe2 = maybe1.map(x => x + 1); // returns Just(43)
    * ------------------------------------------------------------
-   * or using other unary functions:
+   * or using unary functions:
    * const increment = x => x + 1;
    * const maybe3 = maybe1.map(increment); // returns Just(43)
-   *
    */
   map(fn) {
     return Maybe.Just(fn(this._value));
   }
 
   /**
-   * Applies a function to the value and returns the result.
+   * Applies a function to the value and returns the result. This can be used when a function needs to be applied to multiple Maybe instances. Behaves as flatMap
    * @param {Function} fn - The function to apply to the value.
-   * @returns {*} The result of applying the function to the value.
+   * @returns {*} a flatMapped instance of Just wrapping the transformed value.
    * @example
    * const maybe1 = Maybe.Just(42);
-   * const result = maybe1.chain(x => Maybe.Just(x + 1)); // returns 43
+   * const result = maybe1.chain(x => Maybe.Just(x + 1));
+
+   * Here, result will be an instance of Just with a value of 43 instead of an instance of Just with a value of Just(43) if we had used map instead.
    */
   chain(fn) {
     return fn(this._value);
   }
 
   /**
-   * Applies a Maybe instance with a function to this instance and returns the result. This can be used when a function needs to be applied to multiple Maybe instances.
+   * Applies a Maybe instance with a function to this instance and returns the result. This can be used when a function needs to be applied to multiple Maybe instances. Useful for things like applying validation to multiple Maybe instances.
    * @param {Maybe} something - The Maybe instance with a function to apply to this instance.
    * @returns {Maybe} The result of applying the function to this instance.
    * @example
    * const maybe1 = Maybe.Just(42);
    * const maybe2 = Maybe.Just(x => x + 1);
-   * const result = maybe1.ap(maybe2); // returns Just(43)
+   * const result = maybe2.ap(maybe1); // returns Just(43)
    */
   ap(something) {
     return something.map(this._value);
   }
 
   /**
-   * Returns the value of this instance.
+   * Returns the value of this instance. Similar to Fold, but takes a fallback value to return if this instance is a Nothing.
    * @returns {*} The value of this instance.
    * @example
    * const maybe = Maybe.Just(42);
@@ -163,7 +172,7 @@ export class Nothing {
    * @returns {Nothing} This instance.
    * @example
    * const maybe = Maybe.Nothing();
-   * const result = maybe.map(x => x + 1); // returns Nothing
+   * const result = maybe.map(x => x + 1); // returns Nothing, short-circuiting the function and any subsequent operations
    */
   map(fn) {
     return this;
@@ -195,7 +204,7 @@ export class Nothing {
   }
 
   /**
-   * Returns the given value, indicating that this instance has no value.
+   * Returns the given fallback value
    * @param {*} other - The value to return. (The 'Else' in getOrElse)
    * @returns {*} The given value.
    * @example
