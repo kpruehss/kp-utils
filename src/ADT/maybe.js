@@ -45,6 +45,9 @@ export class Maybe {
  * @class
  */
 export class Just {
+  constructor(value) {
+    this._value = value;
+  }
   /**
    * Creates a new Just instance with a value transformed by a function.
    * @param {Function} fn - The function to apply to the value.
@@ -99,6 +102,28 @@ export class Just {
    */
   getOrElse() {
     return this._value;
+  }
+
+  /**
+   * Applies one of two functions to the value of this instance and returns the result.
+   * @param {Function} f - The function to apply if this instance is a Nothing.
+   * @param {Function} g - The function to apply if this instance is a Just.
+   * @returns {*} The result of applying the appropriate function to the value of this instance.
+   * @example
+   * const maybeNum = Maybe.Just(42);
+   * const result1 = maybeNum.fold(
+   *   () => "No value",
+   *   x => x + 1
+   * ); // result1 is 43
+   *
+   * const maybeNothing = Maybe.Nothing();
+   * const result2 = maybeNothing.fold(
+   *   () => "No value",
+   *   x => x + 1
+   * ); // result2 is "No value"
+   */
+  fold(f, g) {
+    return g(this._value);
   }
 
   /**
@@ -179,6 +204,28 @@ export class Nothing {
    */
   getOrElse(other) {
     return other;
+  }
+
+  /**
+   * Applies one of two functions to the value of this instance and returns the result.
+   * @param {Function} f - The function to apply if this instance is a Nothing.
+   * @param {Function} g - The function to apply if this instance is a Just.
+   * @returns {*} The result of applying the appropriate function to the value of this instance.
+   * @example
+   * const maybeNum = Maybe.Just(42);
+   * const result1 = maybeNum.fold(
+   *   () => "No value",
+   *   x => x + 1
+   * ); // result1 is 43
+   *
+   * const maybeNothing = Maybe.Nothing();
+   * const result2 = maybeNothing.fold(
+   *   () => "No value",
+   *   x => x + 1
+   * ); // result2 is "No value"
+   */
+  fold(f, g) {
+    return f();
   }
 
   /**
