@@ -8,10 +8,42 @@ export class Either {
     return new Right(value);
   }
 
+  static of(value) {
+    return new Right(value);
+  }
+
   static fromPredicate(predicate) {
     return function (value) {
       return predicate(value) ? Right.of(value) : Left.of(value);
     };
+  }
+
+  map() {
+    throw new Error('Method "map" should be implemented');
+  }
+
+  ap() {
+    throw new Error('Method "ap" should be implemented');
+  }
+
+  chain() {
+    throw new Error('Method "chain" should be implemented');
+  }
+
+  tap() {
+    throw new Error('Method "tap" should be implemented');
+  }
+
+  fold() {
+    throw new Error('Method "fold" should be implemented');
+  }
+
+  isLeft() {
+    throw new Error('Method "isLeft" should be implemented');
+  }
+
+  isRight() {
+    throw new Error('Method "isRight" should be implemented');
   }
 }
 
