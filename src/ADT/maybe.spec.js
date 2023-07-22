@@ -17,21 +17,21 @@ describe('Maybe', () => {
     });
   });
 
-  describe('.of', () => {
+  describe('fromNullable', () => {
     test('returns a new Just instance with the given value if it is not null or undefined', () => {
-      const maybeNum = Maybe.of(42);
+      const maybeNum = Maybe.fromNullable(42);
       expect(maybeNum).toBeInstanceOf(Just);
       expect(maybeNum.getOrElse()).toBe(42);
     });
 
     test('returns a new Nothing instance if the given value is null', () => {
-      const maybeNull = Maybe.of(null);
+      const maybeNull = Maybe.fromNullable(null);
       expect(maybeNull).toBeInstanceOf(Nothing);
       expect(maybeNull.isNothing()).toBe(true);
     });
 
     test('returns a new Nothing instance if the given value is undefined', () => {
-      const maybeUndefined = Maybe.of(undefined);
+      const maybeUndefined = Maybe.fromNullable(undefined);
       expect(maybeUndefined).toBeInstanceOf(Nothing);
       expect(maybeUndefined.isNothing()).toBe(true);
     });

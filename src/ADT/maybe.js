@@ -36,7 +36,7 @@ export class Maybe {
    * const maybe1 = Maybe.of(null); // returns Nothing
    * const maybe2 = Maybe.of(42); // returns Just(42)
    */
-  static of(value) {
+  static fromNullable(value) {
     return value !== null && value !== undefined
       ? Maybe.just(value)
       : Maybe.nothing();
