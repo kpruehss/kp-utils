@@ -2,7 +2,7 @@ import { Maybe, Just, Nothing } from './maybe';
 describe('Maybe', () => {
   describe('Just', () => {
     test('returns a new Just instance with the given value', () => {
-      const maybeNum = Maybe.Just(42);
+      const maybeNum = Maybe.just(42);
       expect(maybeNum).toBeInstanceOf(Just);
       console.log(maybeNum);
       expect(maybeNum.getOrElse()).toBe(42);
@@ -11,7 +11,7 @@ describe('Maybe', () => {
 
   describe('Nothing', () => {
     test('returns a new Nothing instance', () => {
-      const maybe = Maybe.Nothing();
+      const maybe = Maybe.nothing();
       expect(maybe).toBeInstanceOf(Nothing);
       expect(maybe.isNothing()).toBe(true);
     });
@@ -41,7 +41,7 @@ describe('Maybe', () => {
     let maybeNum;
 
     beforeEach(() => {
-      maybeNum = Maybe.Just(42);
+      maybeNum = Maybe.just(42);
     });
 
     describe('map', () => {
@@ -54,14 +54,14 @@ describe('Maybe', () => {
 
     describe('chain', () => {
       test('applies a function to the value and returns the result', () => {
-        const result = maybeNum.chain(x => Maybe.Just(x + 1));
+        const result = maybeNum.chain(x => Maybe.just(x + 1));
         expect(result.getOrElse()).toBe(43);
       });
     });
 
     describe('ap', () => {
       test('applies a Maybe instance with a function to this instance and returns the result', () => {
-        const maybeFn = Maybe.Just(x => x + 1);
+        const maybeFn = Maybe.just(x => x + 1);
         const result = maybeFn.ap(maybeNum);
         expect(result).toBeInstanceOf(Just);
         expect(result.getOrElse()).toBe(43);
@@ -76,7 +76,7 @@ describe('Maybe', () => {
     });
     describe('fold', () => {
       test('applies the "Just" function to the value and returns the result', () => {
-        const maybeNum = Maybe.Just(42);
+        const maybeNum = Maybe.just(42);
         const result = maybeNum.fold(
           () => 'No value',
           x => x + 1,
@@ -106,7 +106,7 @@ describe('Maybe', () => {
     let maybe;
 
     beforeEach(() => {
-      maybe = Maybe.Nothing();
+      maybe = Maybe.nothing();
     });
 
     describe('map', () => {
@@ -114,23 +114,26 @@ describe('Maybe', () => {
         const result = maybe.map(x => x + 1);
         expect(result).toBeInstanceOf(Nothing);
         expect(result.isNothing()).toBe(true);
+        expect(result).toEqual({ _tag: 'Nothing' });
       });
     });
 
     describe('chain', () => {
       test('returns this instance', () => {
-        const result = maybe.chain(x => Maybe.Just(x + 1));
+        const result = maybe.chain(x => Maybe.just(x + 1));
         expect(result).toBeInstanceOf(Nothing);
         expect(result.isNothing()).toBe(true);
+        expect(result).toEqual({ _tag: 'Nothing' });
       });
     });
 
     describe('ap', () => {
       test('returns this instance', () => {
-        const maybeFn = Maybe.Just(x => x + 1);
+        const maybeFn = Maybe.just(x => x + 1);
         const result = maybe.ap(maybeFn);
         expect(result).toBeInstanceOf(Nothing);
         expect(result.isNothing()).toBe(true);
+        expect(result).toEqual({ _tag: 'Nothing' });
       });
     });
 
@@ -142,7 +145,7 @@ describe('Maybe', () => {
     });
     describe('fold', () => {
       test('applies the "Nothing" function and returns its result', () => {
-        const maybeNothing = Maybe.Nothing();
+        const maybeNothing = Maybe.nothing();
         const result = maybeNothing.fold(
           () => 'No value',
           x => x + 1,
@@ -154,6 +157,7 @@ describe('Maybe', () => {
     describe('isNothing', () => {
       test('returns true', () => {
         expect(maybe.isNothing()).toBe(true);
+        expect(maybe).toEqual({ _tag: 'Nothing' });
       });
     });
 

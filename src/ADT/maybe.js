@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * Wraps a value that may or may not exist. This is useful for avoiding null checks and for chaining operations that may return null.
  * @class
@@ -11,7 +12,7 @@ export class Maybe {
    * @example
    * const maybeNum = Maybe.Just(42);
    */
-  static Just(value) {
+  static just(value) {
     return new Just(value);
   }
 
@@ -22,7 +23,7 @@ export class Maybe {
    * @example
    * const maybe = Maybe.Nothing();
    */
-  static Nothing() {
+  static nothing() {
     return new Nothing();
   }
 
@@ -36,7 +37,40 @@ export class Maybe {
    * const maybe2 = Maybe.of(42); // returns Just(42)
    */
   static of(value) {
-    return value != null ? Maybe.Just(value) : Maybe.Nothing();
+    return value !== null && value !== undefined
+      ? Maybe.just(value)
+      : Maybe.nothing();
+  }
+  get isNothing() {
+    throw new Error("Method 'isNothing' should be implemented");
+  }
+
+  get isJust() {
+    throw new Error("Method 'isJust' should be implemented");
+  }
+
+  ap(maybe) {
+    throw new Error("Method 'ap' should be implemented");
+  }
+
+  map() {
+    throw new Error("Method 'map' should be implemented");
+  }
+
+  chain() {
+    throw new Error("Method 'chain' should be implemented");
+  }
+
+  fold() {
+    throw new Error("Method 'fold' should be implemented");
+  }
+
+  tap() {
+    throw new Error("Method 'tap' should be implemented");
+  }
+
+  getOrElse() {
+    throw new Error("Method 'getOrElse' should be implemented");
   }
 }
 
@@ -44,7 +78,9 @@ export class Maybe {
  * Represents a Maybe instance with a value.
  * @class
  */
-export class Just {
+export class Just extends Maybe {
+  #value;
+  _tag = 'Just';
   /**
    * Creates a new Maybe instance with the given value. This constructor should not be called directly. Instead, use Maybe's static 'Just' method.
    * @class
@@ -54,7 +90,8 @@ export class Just {
    * const maybeStr = new Maybe.Just("hello");
    */
   constructor(value) {
-    this._value = value;
+    super();
+    this.#value = value;
   }
   /**
    * Creates a new Just instance with a value transformed by a function.
@@ -69,7 +106,7 @@ export class Just {
    * const maybe3 = maybe1.map(increment); // returns Just(43)
    */
   map(fn) {
-    return Maybe.Just(fn(this._value));
+    return Maybe.just(fn(this.#value));
   }
 
   /**
@@ -83,7 +120,7 @@ export class Just {
    * Here, result will be an instance of Just with a value of 43 instead of an instance of Just with a value of Just(43) if we had used map instead.
    */
   chain(fn) {
-    return fn(this._value);
+    return fn(this.#value);
   }
 
   /**
@@ -96,7 +133,7 @@ export class Just {
    * const result = maybe2.ap(maybe1); // returns Just(43)
    */
   ap(something) {
-    return something.map(this._value);
+    return something.map(this.#value);
   }
 
   /**
@@ -110,7 +147,7 @@ export class Just {
    * const result = nothing.getOrElse("No value"); // result is "No value"
    */
   getOrElse() {
-    return this._value;
+    return this.#value;
   }
 
   /**
@@ -132,7 +169,7 @@ export class Just {
    * ); // result2 is "No value"
    */
   fold(f, g) {
-    return g(this._value);
+    return g(this.#value);
   }
 
   /**
@@ -156,7 +193,7 @@ export class Just {
    * maybe.tap(console.log); // (point-free style) logs 42
    */
   tap(fn) {
-    fn(this._value);
+    fn(this.#value);
     return this;
   }
 }
@@ -166,6 +203,7 @@ export class Just {
  * @class
  */
 export class Nothing {
+  _tag = 'Nothing';
   /**
    * Returns this instance, indicating that no function should be applied to it.
    * @param {Function} fn - The function to apply to the value.
