@@ -6,8 +6,9 @@
   "module": "src/index.js",
   "scripts": {
     "test": "jest",
+    "build": "babel src --out-dir lib",
     "format": "prettier --write 'src/**/*.js'",
-    "build": "babel src --out-dir lib"
+    "lint": "eslint 'src/**/*.{js,json}'"
   },
   "jest": {
     "transform": {
@@ -24,5 +25,10 @@
     "babel-jest": "^29.6.1",
     "jest": "^29.6.1",
     "prettier": "^3.0.0"
+  },
+  "dependencies": {
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0"
   }
 }
