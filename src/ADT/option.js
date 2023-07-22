@@ -3,43 +3,43 @@
  * Wraps a value that may or may not exist. This is useful for avoiding null checks and for chaining operations that may return null.
  * @class
  */
-export class Maybe {
+export class Option {
   /**
-   * Creates a new Maybe instance with a value.
+   * Creates a new Option instance with a value.
    * @static
-   * @param {*} value - The value to wrap in a Maybe.
+   * @param {*} value - The value to wrap in a Option .
    * @returns {Some} A new instance of 'Some' with the given value.
    * @example
-   * const maybeNum = Maybe.some(42);
+   * const maybeNum = Option.some(42);
    */
   static some(value) {
     return new Some(value);
   }
 
   /**
-   * Creates a new Maybe instance with no value.
+   * Creates a new Option instance with no value.
    * @static
    * @returns {None} A new 'None' instance.
    * @example
-   * const maybe = Maybe.none();
+   * const maybe = Option.none();
    */
   static none() {
     return new None();
   }
 
   /**
-   * Creates a new Maybe instance from a nullable value. If the value is null or undefined, a new 'None' instance is returned. Otherwise, a new 'Some' instance is returned.
+   * Creates a new Option instance from a nullable value. If the value is null or undefined, a new 'None' instance is returned. Otherwise, a new 'Some' instance is returned.
    * @static
-   * @param {*} value - The value to wrap in a Maybe.
+   * @param {*} value - The value to wrap in a Option.
    * @returns {Some|None} A new 'Some' instance with the given value if it is not null or undefined, otherwise a new 'None' instance.
    * @example
-   * const maybe1 = Maybe.fromNullable(null); // returns None
-   * const maybe2 = Maybe.fromNullable(42); // returns Some(42)
+   * const maybe1 = Option.fromNullable(null); // returns None
+   * const maybe2 = Option.fromNullable(42); // returns Some(42)
    */
   static fromNullable(value) {
     return value !== null && value !== undefined
-      ? Maybe.some(value)
-      : Maybe.none();
+      ? Option.some(value)
+      : Option.none();
   }
   get isNone() {
     throw new Error("Method 'isNone' should be implemented");
@@ -75,19 +75,19 @@ export class Maybe {
 }
 
 /**
- * Represents a Maybe instance with a value.
+ * Represents a  Option instance with a value.
  * @class
  */
-export class Some extends Maybe {
+export class Some extends Option {
   #value;
   _tag = 'Some';
   /**
-   * Creates a new Maybe instance with the given value. This constructor should not be called directly. Instead, use Maybe's static 'Some' method.
+   * Creates a new Option instance with the given value. This constructor should not be called directly. Instead, use Option 's static 'Some' method.
    * @class
-   * @param {*} value - The value to wrap in a Maybe instance.
+   * @param {*} value - The value to wrap in a Option instance.
    * @example
-   * const someNum = new Maybe.some(42);
-   * const someStr = new Maybe.some("hello");
+   * const someNum = new Option.some(42);
+   * const someStr = new Option.some("hello");
    */
   constructor(value) {
     super();
@@ -98,7 +98,7 @@ export class Some extends Maybe {
    * @param {Function} fn - The function to apply to the value.
    * @returns {Some} A new 'Some' instance with the transformed value.
    * @example
-   * const maybe1 = Maybe.some(42);
+   * const maybe1 = Option.some(42);
    * const maybe2 = maybe1.map(x => x + 1); // returns Some(43)
    * ------------------------------------------------------------
    * or using unary functions:
@@ -106,16 +106,16 @@ export class Some extends Maybe {
    * const maybe3 = maybe1.map(increment); // returns Some(43)
    */
   map(fn) {
-    return Maybe.some(fn(this.#value));
+    return Option.some(fn(this.#value));
   }
 
   /**
-   * Applies a function to the value and returns the result. This can be used when a function needs to be applied to multiple Maybe instances. Behaves as flatMap
+   * Applies a function to the value and returns the result. This can be used when a function needs to be applied to multiple  Option instances. Behaves as flatMap
    * @param {Function} fn - The function to apply to the value.
    * @returns {*} a flatMapped instance of 'Some' wrapping the transformed value.
    * @example
-   * const maybe1 = Maybe.some(42);
-   * const result = maybe1.chain(x => Maybe.some(x + 1));
+   * const maybe1 = Option.some(42);
+   * const result = maybe1.chain(x => Option.some(x + 1));
 
    * Here, result will be an instance of 'Some' with a value of 43 instead of an instance of 'Some' with a value of Some(43) if we had used map instead.
    */
@@ -124,12 +124,12 @@ export class Some extends Maybe {
   }
 
   /**
-   * Applies a Maybe instance with a function to this instance and returns the result. This can be used when a function, such as input validation, needs to be applied to multiple Maybe instances.
-   * @param {Maybe} something - The Maybe instance with a function to apply to this instance.
-   * @returns {Maybe} The result of applying the function to this instance.
+   * Applies a  Option instance with a function to this instance and returns the result. This can be used when a function, such as input validation, needs to be applied to multiple Option instances.
+   * @param {Option } something - The Option instance with a function to apply to this instance.
+   * @returns {Option } The result of applying the function to this instance.
    * @example
-   * const maybe1 = Maybe.some(42);
-   * const maybe2 = Maybe.some(x => x + 1);
+   * const maybe1 = Option.some(42);
+   * const maybe2 = Option.some(x => x + 1);
    * const result = maybe2.ap(maybe1); // returns Some(43)
    */
   ap(something) {
@@ -140,10 +140,10 @@ export class Some extends Maybe {
    * Returns the value of this instance. Similar to Fold, but takes a fallback value to return if this instance is a 'None'.
    * @returns {*} The value of this instance.
    * @example
-   * const maybe = Maybe.Some(42);
+   * const maybe = Option.Some(42);
    * const value = maybe.getOrElse(); // returns 42
    *
-   * const nothing = Maybe.none();
+   * const nothing = Option.none();
    * const result = nothing.getOrElse("No value"); // result is "No value"
    */
   getOrElse() {
@@ -156,13 +156,13 @@ export class Some extends Maybe {
    * @param {Function} g - The function to apply if this instance is a 'Some'.
    * @returns {*} The result of applying the appropriate function to the value of this instance.
    * @example
-   * const maybeNum = Maybe.some(42);
+   * const maybeNum = Option.some(42);
    * const result1 = maybeNum.fold(
    *   () => "No value",
    *   x => x + 1
    * ); // result1 is 43
    *
-   * const maybeNothing = Maybe.none();
+   * const maybeNothing = Option.none();
    * const result2 = maybeNothing.fold(
    *   () => "No value",
    *   x => x + 1
@@ -176,7 +176,7 @@ export class Some extends Maybe {
    * Returns false, indicating that this instance is not a 'None'.
    * @returns {boolean} False.
    * @example
-   * const maybe = Maybe.some(42);
+   * const maybe = Option.some(42);
    * const isNone = maybe.isNone(); // returns false
    */
   isNone() {
@@ -187,7 +187,7 @@ export class Some extends Maybe {
    * Returns true, indicating that this instance is a 'Some'.
    * @returns {boolean} False.
    * @example
-   * const maybe = Maybe.some(42);
+   * const maybe = Option.some(42);
    * const isNone = maybe.isNone(); // returns false
    */
   isSome() {
@@ -199,7 +199,7 @@ export class Some extends Maybe {
    * @param {Function} fn - The function to apply to the value.
    * @returns {Some} This instance.
    * @example
-   * const maybe = Maybe.some(42);
+   * const maybe = Option.some(42);
    * maybe.tap(x => console.log(x)); // logs 42
    * maybe.tap(console.log); // (point-free style) logs 42
    */
@@ -210,17 +210,17 @@ export class Some extends Maybe {
 }
 
 /**
- * Represents a Maybe instance with no value.
+ * Represents a Option instance with no value.
  * @class
  */
-export class None extends Maybe {
+export class None extends Option {
   _tag = 'None';
   /**
    * Returns this instance, indicating that no function should be applied to it.
    * @param {Function} fn - The function to apply to the value.
    * @returns {None} This instance.
    * @example
-   * const maybe = Maybe.none();
+   * const maybe = Option.none();
    * const result = maybe.map(x => x + 1); // returns 'None', short-circuiting the function and any subsequent operations
    */
   map(fn) {
@@ -232,8 +232,8 @@ export class None extends Maybe {
    * @param {Function} fn - The function to apply to the value.
    * @returns {None} This instance.
    * @example
-   * const maybe = Maybe.none();
-   * const result = maybe.chain(x => Maybe.some(x + 1)); // returns 'None'
+   * const maybe = Option.none();
+   * const result = maybe.chain(x => Option.some(x + 1)); // returns 'None'
    */
   chain(fn) {
     return this;
@@ -241,11 +241,11 @@ export class None extends Maybe {
 
   /**
    * Returns this instance, indicating that no function should be applied to it.
-   * @param {Maybe} something - The Maybe instance with a function to apply to this instance.
+   * @param {Option} something - The Option instance with a function to apply to this instance.
    * @returns {None} This instance.
    * @example
-   * const maybe1 = Maybe.none();
-   * const maybe2 = Maybe.some(x => x + 1);
+   * const maybe1 = Option.none();
+   * const maybe2 = Option.some(x => x + 1);
    * const result = maybe1.ap(maybe2); // returns 'None'
    */
   ap(something) {
@@ -257,7 +257,7 @@ export class None extends Maybe {
    * @param {*} other - The value to return. (The 'Else' in getOrElse)
    * @returns {*} The given value.
    * @example
-   * const maybeValue = Maybe.none();
+   * const maybeValue = Option.none();
    * const value = maybeValue.getOrElse(42); // returns 42
    */
   getOrElse(other) {
@@ -270,13 +270,13 @@ export class None extends Maybe {
    * @param {Function} g - The function to apply if this instance is 'Some'.
    * @returns {*} The result of applying the appropriate function to the value of this instance.
    * @example
-   * const maybeNum = Maybe.some(42);
+   * const maybeNum = Option.some(42);
    * const result1 = maybeNum.fold(
    *   () => "No value",
    *   x => x + 1
    * ); // result1 is 43
    *
-   * const maybeNothing = Maybe.none();
+   * const maybeNothing = Option.none();
    * const result2 = maybeNothing.fold(
    *   () => "No value",
    *   x => x + 1
@@ -290,7 +290,7 @@ export class None extends Maybe {
    * Returns true, indicating that this instance is a 'None'.
    * @returns {boolean} True.
    * @example
-   * const maybe = Maybe.none();
+   * const maybe = Option.none();
    * const isNone = maybe.isNone(); // returns true
    */
   isNone() {
@@ -301,7 +301,7 @@ export class None extends Maybe {
    * Returns false, indicating that this instance not a 'Some'.
    * @returns {boolean} False.
    * @example
-   * const maybe = Maybe.none();
+   * const maybe = Option.none();
    * const isNone = maybe.isSome(); // returns false
    */
   isSome() {
@@ -313,7 +313,7 @@ export class None extends Maybe {
    * @param {Function} fn - The function to apply to the value.
    * @returns {None} This instance.
    * @example
-   * const maybe = Maybe.none();
+   * const maybe = Option.none();
    * maybe.tap(x => console.log(x)); // does not log anything
    * maybe.tap(console.log); // (point-free style) does not log anything
    */
