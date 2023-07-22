@@ -1,8 +1,8 @@
-import { Maybe, Some, None } from './maybe';
-describe('Maybe', () => {
+import { Option, Some, None } from './option';
+describe('Option', () => {
   describe('Some', () => {
     test('returns a new "Some" instance with the given value', () => {
-      const maybeNum = Maybe.some(42);
+      const maybeNum = Option.some(42);
       expect(maybeNum).toBeInstanceOf(Some);
       expect(maybeNum.isSome()).toBe(true);
       expect(maybeNum.isNone()).toBe(false);
@@ -12,7 +12,7 @@ describe('Maybe', () => {
 
   describe('None', () => {
     test('returns a new "None" instance', () => {
-      const maybe = Maybe.none();
+      const maybe = Option.none();
       expect(maybe).toBeInstanceOf(None);
       expect(maybe.isNone()).toBe(true);
       expect(maybe.isSome()).toBe(false);
@@ -21,7 +21,7 @@ describe('Maybe', () => {
 
   describe('fromNullable', () => {
     test('returns a new "Some" instance with the given value if it is not null or undefined', () => {
-      const maybeNum = Maybe.fromNullable(42);
+      const maybeNum = Option.fromNullable(42);
       expect(maybeNum).toBeInstanceOf(Some);
       expect(maybeNum.isSome()).toBe(true);
       expect(maybeNum.isNone()).toBe(false);
@@ -29,14 +29,14 @@ describe('Maybe', () => {
     });
 
     test('returns a new "None" instance if the given value is null', () => {
-      const maybeNull = Maybe.fromNullable(null);
+      const maybeNull = Option.fromNullable(null);
       expect(maybeNull).toBeInstanceOf(None);
       expect(maybeNull.isNone()).toBe(true);
       expect(maybeNull.isSome()).toBe(false);
     });
 
     test('returns a new "None" instance if the given value is undefined', () => {
-      const maybeUndefined = Maybe.fromNullable(undefined);
+      const maybeUndefined = Option.fromNullable(undefined);
       expect(maybeUndefined).toBeInstanceOf(None);
       expect(maybeUndefined.isNone()).toBe(true);
       expect(maybeUndefined.isSome()).toBe(false);
@@ -47,7 +47,7 @@ describe('Maybe', () => {
     let maybeNum;
 
     beforeEach(() => {
-      maybeNum = Maybe.some(42);
+      maybeNum = Option.some(42);
     });
 
     describe('map', () => {
@@ -62,7 +62,7 @@ describe('Maybe', () => {
 
     describe('chain', () => {
       test('applies a function to the value and returns the result', () => {
-        const result = maybeNum.chain(x => Maybe.some(x + 1));
+        const result = maybeNum.chain(x => Option.some(x + 1));
         expect(result.getOrElse()).toBe(43);
         expect(result).toBeInstanceOf(Some);
         expect(result.isSome()).toBe(true);
@@ -71,8 +71,8 @@ describe('Maybe', () => {
     });
 
     describe('ap', () => {
-      test('applies a Maybe instance with a function to this instance and returns the result', () => {
-        const maybeFn = Maybe.some(x => x + 1);
+      test('applies a  Option instance with a function to this instance and returns the result', () => {
+        const maybeFn = Option.some(x => x + 1);
         const result = maybeFn.ap(maybeNum);
         expect(result).toBeInstanceOf(Some);
         expect(result.isSome()).toBe(true);
@@ -89,7 +89,7 @@ describe('Maybe', () => {
     });
     describe('fold', () => {
       test('applies the "Some" function to the value and returns the result', () => {
-        const maybeNum = Maybe.some(42);
+        const maybeNum = Option.some(42);
         const result = maybeNum.fold(
           () => 'No value',
           x => x + 1,
@@ -122,7 +122,7 @@ describe('Maybe', () => {
     let maybe;
 
     beforeEach(() => {
-      maybe = Maybe.none();
+      maybe = Option.none();
     });
 
     describe('map', () => {
@@ -137,7 +137,7 @@ describe('Maybe', () => {
 
     describe('chain', () => {
       test('returns this instance', () => {
-        const result = maybe.chain(x => Maybe.some(x + 1));
+        const result = maybe.chain(x => Option.some(x + 1));
         expect(result).toBeInstanceOf(None);
         expect(result.isNone()).toBe(true);
         expect(result.isSome()).toBe(false);
@@ -147,7 +147,7 @@ describe('Maybe', () => {
 
     describe('ap', () => {
       test('returns this instance', () => {
-        const maybeFn = Maybe.some(x => x + 1);
+        const maybeFn = Option.some(x => x + 1);
         const result = maybe.ap(maybeFn);
         expect(result).toBeInstanceOf(None);
         expect(result.isNone()).toBe(true);
@@ -164,7 +164,7 @@ describe('Maybe', () => {
     });
     describe('fold', () => {
       test('applies the "None" function and returns its result', () => {
-        const maybeNothing = Maybe.none();
+        const maybeNothing = Option.none();
         const result = maybeNothing.fold(
           () => 'No value',
           x => x + 1,
